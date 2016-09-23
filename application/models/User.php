@@ -1,20 +1,20 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-Class Session extends CI_Model{
+class User extends CI_Model{
 	function __construct(){
 		parent::__construct();
 	}
 //---------------------------------------------------------------------------------------------------
-	function addUser($userInfo){					//submit new user info to DB
+	function addUser($userInfo){
 		$query = "INSERT INTO user (name, username, password, created_at, updated_at) VALUES (?,?,?,NOW(), NOW())";
         $values = array($userInfo['name'], $userInfo['username'], $userInfo['password']); 
-        $this->db->query($query, $values);		//this is CI syntax for putting stuff in DB...
-        return $this->db->insert_id();			//...and getting it back by DB ID. Without this line the welcome page doesn't work.
+        $this->db->query($query, $values);
+        return $this->db->insert_id();
 	}
 //---------------------------------------------------------------------------------------------------
 	function findUser($userID){
-		$query = "SELECT * FROM user WHERE user.id = $userID";	//SQL query string
+		$query = "SELECT * FROM user WHERE user.id = $userID";
 		return $this->db->query($query)->row_array();
 	}
 //---------------------------------------------------------------------------------------------------

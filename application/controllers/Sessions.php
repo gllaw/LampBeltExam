@@ -1,10 +1,10 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-Class Sessions extends CI_Controller{
+class Sessions extends CI_Controller{
 	function __construct(){
         parent::__construct(); 
-        $this->load->model("Session");
+        $this->load->model("User");
 	}
 	function index(){
 		$this->load->view('Main');		
@@ -22,8 +22,8 @@ Class Sessions extends CI_Controller{
 		    redirect('/');
 		}
 		else{									//codes to run on success validation here
-			$newUserID = $this->Session->addUser($this->input->post());		//Get user info as their DB/insert ID, and set it to a variable so it's usable.
-			$userData = $this->Session->findUser($newUserID);					//Use that ID to get user info as an array.
+			$newUserID = $this->User->addUser($this->input->post());		//Get user info as their DB/insert ID, and set it to a variable so it's usable.
+			$userData = $this->User->findUser($newUserID);					//Use that ID to get user info as an array.
 			$this->session->set_userdata('currentUser', $userData);		//save user's info into session.
 			$userDeets = $this->session->userdata('currentUser');				//turning whole array of user info in the session variable into a handy-dandy var that we can use to inject info into targeted spots in a view. 
 			redirect('travels');											//this is a custom route!
@@ -40,7 +40,7 @@ Class Sessions extends CI_Controller{
 		    redirect('/');
 		}
 		else{
-			$userinfo = $this->Session->checkAgainstDB($this->input->post());
+			$userinfo = $this->User->checkAgainstDB($this->input->post());
 			$postdata = $this->input->post();			//setting form inputs to a variable to use. 
 			if ($userinfo['password'] == $postdata['password']){		//compare db pw to input pw.
 				$this->session->set_userdata('currentUser', $userinfo);		//give them a new session
@@ -57,7 +57,46 @@ Class Sessions extends CI_Controller{
 		if(!$this->session->userData('currentUser')){		//if no session then redirect to root.
 			redirect('/');
 		}		
+		// $tripInfo = $this->Trip->tripSchedDisplay($var);
 		$this->load->view('Travels');
+	}
+//---------------------------------------------------------------------------------------------------
+	function destinationView(){
+		if(!$this->session->userData('currentUser')){		//if no session then redirect to root.
+			redirect('/');
+		}		
+		$this->load->view('Destination');
+	}
+//---------------------------------------------------------------------------------------------------
+	function addTripView(){
+		if(!$this->session->userData('currentUser')){		//if no session then redirect to root.
+			redirect('/');
+		}
+		$this->load->view('AddTrip');
+	}
+	function addTripToDB(){
+		$this->load->library("form_validation");
+		$this->form_validation->set_rules("destination", "Destination", "trim|required");
+		$this->form_validation->set_rules("plan", "Description", "trim|required");
+		$this->form_validation->set_rules("startDate", "Start Date", "trim|required");
+		$this->form_validation->set_rules("returnDate", "Return Date", "trim|required");
+
+		$tripStuff = $this->Trip->actuallyAddTripToDB($this->input->post());
+
+		if($this->form_validation->run() == FALSE){
+			$this->session->set_flashdata('tripError', validation_errors());
+		    redirect('addTripToDB');
+		}
+
+//DIDN'T FINISH AAAAAAAAAAAH
+		else{									//codes to run on success validation here
+			$newUserID = $this->User->addUser($this->input->post());		//Get user info as their DB/insert ID, and set it to a variable so it's usable.
+			$userData = $this->User->findUser($newUserID);					//Use that ID to get user info as an array.
+			$this->session->set_userdata('currentUser', $userData);		//save user's info into session.
+			$userDeets = $this->session->userdata('currentUser');				//turning whole array of user info in the session variable into a handy-dandy var that we can use to inject info into targeted spots in a view. 
+			redirect('travels');											//this is a custom route!
+		}
+
 	}
 //---------------------------------------------------------------------------------------------------
 	function destroy(){
