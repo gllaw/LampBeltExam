@@ -57,6 +57,6 @@ $route['travels'] = 'Sessions/travelsView';
 $route['register'] = 'Sessions/register';
 $route['login'] = 'Sessions/actuallyLogin';
 $route['destination'] = 'Sessions/destinationView';
-$route['addTripToDB'] = 'Sessions/addTripToDB'
+$route['addTripToDB'] = 'Sessions/addTripToDB';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
