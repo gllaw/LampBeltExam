@@ -2,10 +2,6 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Sessions extends CI_Controller{
-	function __construct(){
-        parent::__construct(); 
-        $this->load->model("User");
-	}
 	function index(){
 		$this->load->view('Main');		
 	}
@@ -22,6 +18,7 @@ class Sessions extends CI_Controller{
 		    redirect('/');
 		}
 		else{									//codes to run on success validation here
+        	$this->load->model("User");
 			$newUserID = $this->User->addUser($this->input->post());		//Get user info as their DB/insert ID, and set it to a variable so it's usable.
 			$userData = $this->User->findUser($newUserID);					//Use that ID to get user info as an array.
 			$this->session->set_userdata('currentUser', $userData);		//save user's info into session.
@@ -40,6 +37,7 @@ class Sessions extends CI_Controller{
 		    redirect('/');
 		}
 		else{
+        	$this->load->model("User");
 			$userinfo = $this->User->checkAgainstDB($this->input->post());
 			$postdata = $this->input->post();			//setting form inputs to a variable to use. 
 			if ($userinfo['password'] == $postdata['password']){		//compare db pw to input pw.
@@ -89,7 +87,8 @@ class Sessions extends CI_Controller{
 		}
 
 //DIDN'T FINISH AAAAAAAAAAAH
-		else{									//codes to run on success validation here
+		else{
+        	$this->load->model("User");						//codes to run on success validation here
 			$newUserID = $this->User->addUser($this->input->post());		//Get user info as their DB/insert ID, and set it to a variable so it's usable.
 			$userData = $this->User->findUser($newUserID);					//Use that ID to get user info as an array.
 			$this->session->set_userdata('currentUser', $userData);		//save user's info into session.
